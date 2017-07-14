@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FtpConnectionManager implements ConnectionManager {
-    private static String FILE_PATH = "/opt/importer/cache/files/";
     private FTPClient ftpClient;
     private ConnectionData connectionData;
 
@@ -30,7 +29,6 @@ public class FtpConnectionManager implements ConnectionManager {
         ftpClient.connect(connectionData.getHost(), connectionData.getPort());
         checkReplyCode(ftpClient);
         login(connectionData, ftpClient);
-
         return ftpClient;
     }
 
@@ -40,12 +38,14 @@ public class FtpConnectionManager implements ConnectionManager {
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
         for (FTPFile ftpFile : files) {
-            Path path = Paths.get(ftpClient.printWorkingDirectory() + ftpFile.getName());
-            File file = new File(FILE_PATH + ftpFile.getName());
+            ftpClient.changeWorkingDirectory("/DataImporter/test/Test");
+            System.out.println("Path: " + ftpClient.printWorkingDirectory());
+            Path path = Paths.get(ftpFile.getName());
+            File file = new File("/home/lzecevic/Desktop/importer/" + ftpFile.getName());
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 Boolean success = ftpClient.retrieveFile(path.toString(), outputStream);
                 if (!success) {
-                    throw new IOException("File retrieving failed!");
+                    throw new IOException("FIleFile retrieving failed!");
                 }
             }
         }

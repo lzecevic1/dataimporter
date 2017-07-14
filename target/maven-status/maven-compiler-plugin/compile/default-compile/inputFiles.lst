@@ -1,5 +1,7 @@
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/repository/PortedNumberRepository.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/repository/FileRepository.java
+/home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/ConnectionTypeDeserializer.java
+/home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/controller/ConnectionDataController.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/DataImporterApplication.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/connectionmanager/FtpConnectionManager.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/connectionmanager/ConnectionManager.java

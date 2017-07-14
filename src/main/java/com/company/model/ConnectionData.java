@@ -2,10 +2,7 @@ package com.company.model;
 
 import com.company.enums.ConnectionType;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ConnectionData {
@@ -16,7 +13,12 @@ public class ConnectionData {
     private Integer port;
     private String username;
     private String password;
+
+    @Enumerated(EnumType.STRING)
     private ConnectionType type;
+
+    public ConnectionData() {
+    }
 
     public ConnectionData(String host, Integer port, String username, String password, ConnectionType type) {
         this.host = host;
@@ -58,10 +60,13 @@ public class ConnectionData {
         this.password = password;
     }
 
+//    @JsonProperty("connectionType")
     public ConnectionType getType() {
         return type;
     }
 
+//    @JsonProperty("connectionType")
+//    @JsonDeserialize(using = ConnectionTypeDeserializer.class)
     public void setType(ConnectionType type) {
         this.type = type;
     }

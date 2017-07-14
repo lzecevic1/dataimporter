@@ -8,9 +8,6 @@ import java.util.concurrent.*;
 
 public class FileProcessor {
 
-    // File path ovdje ili da se procita/proslijedi iz FtpConnectionManager
-    private static String FILE_PATH = "/opt/importer/cache/files/";
-
     public void processFiles(FTPFile[] files) throws IOException {
         for (FTPFile file : files) {
             LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
@@ -28,7 +25,7 @@ public class FileProcessor {
     }
 
     private void readAllPortedNumbers(FTPFile file, LinkedBlockingQueue<String> portedNumbers) throws IOException {
-        FileReader fileReader = new FileReader(FILE_PATH + file.getName());
+        FileReader fileReader = new FileReader("/home/lzecevic/Desktop/importer/" + file.getName());
         try (BufferedReader br = new BufferedReader(fileReader)) {
             while (br.readLine() != null) {
                 portedNumbers.add(br.readLine());
