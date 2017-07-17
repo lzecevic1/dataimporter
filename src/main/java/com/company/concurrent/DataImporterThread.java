@@ -9,18 +9,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DataImporterThread implements Runnable {
 
     @Autowired
-    private PortedNumberRepository numberRepository;
+    private PortedNumberRepository portedNumberRepository;
 
     private LinkedBlockingQueue<String> portedNumbers;
 
-    public DataImporterThread(LinkedBlockingQueue<String> portedNumbers) {
+    public DataImporterThread(LinkedBlockingQueue<String> portedNumbers, PortedNumberRepository portedNumberRepository) {
         this.portedNumbers = portedNumbers;
+        this.portedNumberRepository = portedNumberRepository;
     }
 
     @Override
     public void run() {
         try {
-            numberRepository.save(new PortedNumber(portedNumbers.take()));
+            while (portedNumbers.size() > 0) {
+                portedNumberRepository.save(new PortedNumber(portedNumbers.take()));
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

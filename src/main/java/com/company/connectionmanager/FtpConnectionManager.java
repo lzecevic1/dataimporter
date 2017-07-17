@@ -34,21 +34,24 @@ public class FtpConnectionManager implements ConnectionManager {
 
     @Override
     public void download(FTPFile[] files) throws Exception {
-        ftpClient.enterLocalPassiveMode();
-        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        prepareFtpClient();
 
         for (FTPFile ftpFile : files) {
             ftpClient.changeWorkingDirectory("/DataImporter/test/Test");
-            System.out.println("Path: " + ftpClient.printWorkingDirectory());
             Path path = Paths.get(ftpFile.getName());
             File file = new File("/home/lzecevic/Desktop/importer/" + ftpFile.getName());
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 Boolean success = ftpClient.retrieveFile(path.toString(), outputStream);
                 if (!success) {
-                    throw new IOException("FIleFile retrieving failed!");
+                    throw new IOException("File retrieving failed!");
                 }
             }
         }
+    }
+
+    private void prepareFtpClient() throws IOException {
+        ftpClient.enterLocalPassiveMode();
+        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
     }
 
     private void login(ConnectionData connectionData, FTPClient ftp) throws Exception {

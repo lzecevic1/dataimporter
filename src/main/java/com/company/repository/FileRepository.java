@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface FileRepository extends CrudRepository<ImportFile, Integer> {
     Optional<ImportFile> findFirstByOrderByDateOfImportDesc();
+
+    Optional<ImportFile> findByFileName(String fileName);
 }

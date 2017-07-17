@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 public class FTPFileFilterImpl implements FTPFileFilter {
 
+    @Autowired
     private FileRepository fileRepository;
 
     public FTPFileFilterImpl(FileRepository fileRepository) {
@@ -27,9 +28,15 @@ public class FTPFileFilterImpl implements FTPFileFilter {
 
         Optional<ImportFile> lastImportedFile = fileRepository.findFirstByOrderByDateOfImportDesc();
         if (!lastImportedFile.isPresent()) return true;
-        Calendar dateOfLastImport = lastImportedFile.get().getDateOfImport();
+        if (isImportedFile(nameOfFile)) return false;
 
+        Calendar dateOfLastImport = lastImportedFile.get().getDateOfImport();
         return importDateOfFile.compareTo(dateOfLastImport) > 0;
+    }
+
+    private boolean isImportedFile(String nameOfFile) {
+        Optional<ImportFile> file = fileRepository.findByFileName(nameOfFile);
+        return file.isPresent();
     }
 
     private Calendar getDate(String[] splitedNameOfFile) {

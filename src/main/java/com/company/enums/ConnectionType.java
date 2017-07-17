@@ -1,39 +1,36 @@
 package com.company.enums;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.Optional;
-
-@JsonFormat(shape=JsonFormat.Shape.OBJECT)
 public enum ConnectionType {
-    FTP("FTP"),
-    FTPS("FTPS");
+    FTP(1, "FTP"),
+    SFTP(2, "SFTP");
 
-    private final String connectionType;
+    private int value;
+    private String connectionType;
 
-    ConnectionType(String connectionType) {
+    ConnectionType(int value, String connectionType) {
+        this.value = value;
         this.connectionType = connectionType;
     }
 
-    @JsonProperty("connectionType")
+    public int getValue() {
+        return value;
+    }
+
     public String getConnectionType() {
         return connectionType;
     }
 
-    public static Optional<ConnectionType> fromType(final String connectionType) {
-        if(connectionType != null) {
-            for(ConnectionType type : ConnectionType.values()) {
-                if(connectionType.equals(type.connectionType)) {
-                    return Optional.of(type);
-                }
-            }
-        }
-        return Optional.empty();
+    private static final Map<Integer, ConnectionType> integerToEnum = new HashMap<>();
+
+    static { // Initialize map from constant name to enum constant
+        for (ConnectionType element : values())
+            integerToEnum.put(element.getValue(), element);
     }
 
-    @Override
-    public String toString() {
-        return connectionType;
+    public static ConnectionType fromValue(Integer value) {
+        return integerToEnum.get(value);
     }
 }

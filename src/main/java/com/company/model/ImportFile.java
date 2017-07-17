@@ -15,6 +15,9 @@ public class ImportFile {
     private String fileName;
     private Calendar dateOfImport;
 
+    public ImportFile() {
+    }
+
     public ImportFile(String fileName, Calendar dateOfImport) {
         this.fileName = fileName;
         this.dateOfImport = dateOfImport;

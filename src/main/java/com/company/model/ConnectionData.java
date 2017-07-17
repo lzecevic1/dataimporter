@@ -60,13 +60,10 @@ public class ConnectionData {
         this.password = password;
     }
 
-//    @JsonProperty("connectionType")
     public ConnectionType getType() {
         return type;
     }
 
-//    @JsonProperty("connectionType")
-//    @JsonDeserialize(using = ConnectionTypeDeserializer.class)
     public void setType(ConnectionType type) {
         this.type = type;
     }
