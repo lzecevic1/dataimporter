@@ -13,6 +13,7 @@ public class ConnectionData {
     private Integer port;
     private String username;
     private String password;
+    private String path;
 
     @Enumerated(EnumType.STRING)
     private ConnectionType type;
@@ -20,11 +21,12 @@ public class ConnectionData {
     public ConnectionData() {
     }
 
-    public ConnectionData(String host, Integer port, String username, String password, ConnectionType type) {
+    public ConnectionData(String host, Integer port, String username, String password, String path, ConnectionType type) {
         this.host = host;
         this.port = port;
         this.username = username;
         this.password = password;
+        this.path = path;
         this.type = type;
     }
 
@@ -68,6 +70,14 @@ public class ConnectionData {
         this.type = type;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,25 +85,37 @@ public class ConnectionData {
 
         ConnectionData that = (ConnectionData) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        if (port != null ? !port.equals(that.port) : that.port != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        return password != null ? password.equals(that.password) : that.password == null;
+        if (password != null ? !password.equals(that.password) : that.password != null) return false;
+        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        return type == that.type;
     }
 
     @Override
     public int hashCode() {
-        int result = host != null ? host.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (host != null ? host.hashCode() : 0);
+        result = 31 * result + (port != null ? port.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "ConnectionData{" +
-                "host='" + host + '\'' +
+                "id=" + id +
+                ", host='" + host + '\'' +
+                ", port=" + port +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", path='" + path + '\'' +
+                ", type=" + type +
                 '}';
     }
 }

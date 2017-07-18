@@ -1,4 +1,5 @@
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/repository/PortedNumberRepository.java
+/home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/util/FileNameParser.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/factory/ConnectionManagerFactory.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/repository/FileRepository.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/controller/ConnectionDataController.java
@@ -11,6 +12,7 @@
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/concurrent/DataImporterThread.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/model/ImportFile.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/model/ConnectionData.java
+/home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/connectionmanager/SftpConnectionManager.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/model/PortedNumber.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/repository/ConnectionDataRepository.java
 /home/lzecevic/IdeaProjects/dataimporter/src/main/java/com/company/enums/ConnectionType.java

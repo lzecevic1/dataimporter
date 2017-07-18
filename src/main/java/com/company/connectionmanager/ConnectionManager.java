@@ -1,10 +1,9 @@
 package com.company.connectionmanager;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
+import java.util.List;
 
 public interface ConnectionManager {
-    FTPClient connect() throws Exception;
+    void connect() throws Exception;
 
-    void download(FTPFile[] files) throws Exception;
+    List<String> download()throws Exception;
 }

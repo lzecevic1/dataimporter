@@ -6,6 +6,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.company.util.FileNameParser;
 
 import java.util.Calendar;
 import java.util.Optional;
@@ -15,20 +16,22 @@ public class FTPFileFilterImpl implements FTPFileFilter {
 
     @Autowired
     private FileRepository fileRepository;
+    @Autowired
+    private FileNameParser fileNameParser;
 
-    public FTPFileFilterImpl(FileRepository fileRepository) {
+    public FTPFileFilterImpl(FileRepository fileRepository, FileNameParser fileNameParser) {
         this.fileRepository = fileRepository;
+        this.fileNameParser = fileNameParser;
     }
 
     @Override
     public boolean accept(FTPFile ftpFile) {
-        String nameOfFile = ftpFile.getName();
-        String[] splitedNameOfFile = nameOfFile.split("_");
-        Calendar importDateOfFile = getDate(splitedNameOfFile);
+        String nameOfFtpFile = ftpFile.getName();
+        Calendar importDateOfFile = fileNameParser.getTimestampFromFileName(nameOfFtpFile);
 
         Optional<ImportFile> lastImportedFile = fileRepository.findFirstByOrderByDateOfImportDesc();
         if (!lastImportedFile.isPresent()) return true;
-        if (isImportedFile(nameOfFile)) return false;
+        if (isImportedFile(nameOfFtpFile)) return false;
 
         Calendar dateOfLastImport = lastImportedFile.get().getDateOfImport();
         return importDateOfFile.compareTo(dateOfLastImport) > 0;
@@ -37,14 +40,5 @@ public class FTPFileFilterImpl implements FTPFileFilter {
     private boolean isImportedFile(String nameOfFile) {
         Optional<ImportFile> file = fileRepository.findByFileName(nameOfFile);
         return file.isPresent();
-    }
-
-    private Calendar getDate(String[] splitedNameOfFile) {
-        Integer year = Integer.valueOf(splitedNameOfFile[1]);
-        Integer month = Integer.valueOf(splitedNameOfFile[2]);
-        Integer day = Integer.valueOf(splitedNameOfFile[3]);
-        Calendar date = Calendar.getInstance();
-        date.set(year, month, day);
-        return date;
     }
 }
