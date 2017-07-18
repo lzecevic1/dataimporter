@@ -24,7 +24,6 @@ public enum ConnectionType {
     }
 
     private static final Map<Integer, ConnectionType> integerToEnum = new HashMap<>();
-
     static { // Initialize map from constant name to enum constant
         for (ConnectionType element : values())
             integerToEnum.put(element.getValue(), element);

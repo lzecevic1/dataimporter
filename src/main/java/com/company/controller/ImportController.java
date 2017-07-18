@@ -35,7 +35,6 @@ public class ImportController {
     private void manageFiles(ConnectionManager connectionManager) throws Exception {
         connectionManager.connect();
         List<String> files = connectionManager.download();
-        fileProcessor.saveFiles(files);
         fileProcessor.processFiles(files);
     }
 }

@@ -1,6 +1,8 @@
 package com.company.connectionmanager;
 
 import com.company.model.ConnectionData;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
@@ -11,13 +13,18 @@ public class SftpConnectionManager implements ConnectionManager {
     private ConnectionData connectionData;
 
     public SftpConnectionManager(ConnectionData connectionData) {
+        this.jsch = new JSch();
         this.connectionData = connectionData;
     }
 
     @Override
     public void connect() throws Exception {
-        JSch jsch = new JSch();
-        Session session = jsch.getSession(connectionData.getUsername(), connectionData.getHost());
+        Session session = jsch.getSession(connectionData.getUsername(), connectionData.getHost(), connectionData.getPort());
+        session.setPassword(connectionData.getPassword());
+        session.connect();
+
+
+        ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
     }
 
     @Override

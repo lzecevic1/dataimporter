@@ -24,11 +24,9 @@ public class FileProcessor {
     @Autowired
     private FileNameParser fileNameParser;
 
-    public void saveFiles(List<String> fileNames) {
-        fileNames.forEach(fileName -> {
-            ImportFile newFile = new ImportFile(fileName, fileNameParser.getTimestampFromFileName(fileName));
-            fileRepository.save(newFile);
-        });
+    public void saveFile(String fileName) {
+        ImportFile newFile = new ImportFile(fileName, fileNameParser.getTimestampFromFileName(fileName));
+        fileRepository.save(newFile);
     }
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
@@ -36,6 +34,7 @@ public class FileProcessor {
             LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
             readAllPortedNumbersFromFile(fileName, portedNumbers);
             saveNumbers(portedNumbers);
+            saveFile(fileName);
         }
     }
 
