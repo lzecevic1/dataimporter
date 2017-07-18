@@ -5,10 +5,12 @@ import com.company.enums.ConnectionType;
 import com.company.factory.ConnectionManagerFactory;
 import com.company.service.FileProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/startImport")
@@ -22,19 +24,25 @@ public class ImportController {
     public String start(@RequestBody Integer connectionType) {
         try {
             ConnectionType enumValueOfType = ConnectionType.fromValue(connectionType);
-            Optional<ConnectionManager> connectionManagerOptional = connectionManagerFactory.get(enumValueOfType);
-            ConnectionManager connectionManager = connectionManagerOptional.orElseThrow(Exception::new);
+            ConnectionManager connectionManager = connectionManagerFactory.getConnectionManager(enumValueOfType);
             manageFiles(connectionManager);
         } catch (Exception exception) {
-            System.out.println("Exception: " + exception.getMessage());
-            return "Exception";
+            exception.printStackTrace();
+            return "Exception: " + exception.getMessage();
         }
         return "Successful data import!";
     }
 
     private void manageFiles(ConnectionManager connectionManager) throws Exception {
-        connectionManager.connect();
-        List<String> files = connectionManager.download();
-        fileProcessor.processFiles(files);
+        try {
+            connectionManager.connect();
+            List<String> files = connectionManager.download();
+            fileProcessor.processFiles(files);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            connectionManager.disconnect();
+        }
     }
 }

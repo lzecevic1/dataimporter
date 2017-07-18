@@ -64,6 +64,13 @@ public class FtpConnectionManager implements ConnectionManager {
         return fileNames;
     }
 
+    @Override
+    public void disconnect() throws IOException {
+        if(ftpClient.isConnected()) {
+            ftpClient.disconnect();
+        }
+    }
+
     private void prepareFtpClient() throws IOException {
         ftpClient.enterLocalPassiveMode();
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
