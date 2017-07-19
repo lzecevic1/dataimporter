@@ -2,8 +2,8 @@ package com.company;
 
 import com.company.factory.ConnectionManagerFactory;
 import com.company.service.FileProcessor;
-import com.company.util.FileFilter;
 import com.company.util.FileNameParser;
+import com.company.util.Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -34,5 +34,10 @@ public class DataImporterApplication {
     @Bean
     public ConnectionManagerFactory connectionManagerFactory() {
         return new ConnectionManagerFactory();
+    }
+
+    @Bean
+    public Properties properties() {
+        return new Properties();
     }
 }
