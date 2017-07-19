@@ -53,7 +53,7 @@ public class FtpConnectionManager implements ConnectionManager {
         for (FTPFile ftpFile : files) {
             String ftpFileName = ftpFile.getName();
             Path path = Paths.get(connectionData.getPath() + ftpFileName);
-            File file = new File(HOST_PATH + ftpFileName);
+            File file = new File(System.getProperty("file.location") + ftpFileName);
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 Boolean success = ftpClient.retrieveFile(path.toString(), outputStream);
                 if (!success) {

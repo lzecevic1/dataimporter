@@ -24,7 +24,6 @@ public class ConnectionManagerFactory {
     public ConnectionManager getConnectionManager(ConnectionType type) throws Exception {
         Optional<ConnectionData> connectionDataOptional = connectionDataRepository.findByType(type);
         ConnectionData connectionData = connectionDataOptional.orElseThrow(Exception::new);
-
         if (type.equals(ConnectionType.FTP)) {
             return new FtpConnectionManager(connectionData, fileRepository, fileNameParser);
         } else if (type.equals(ConnectionType.SFTP)) {

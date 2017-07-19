@@ -72,7 +72,7 @@ public class SftpConnectionManager implements ConnectionManager {
 
     private void downloadFile(String nameOfFile) throws IOException, SftpException {
         Path path = Paths.get(connectionData.getPath() + nameOfFile);
-        File file = new File(HOST_PATH + nameOfFile);
+        File file = new File(System.getProperties().getProperty("file.location") + nameOfFile);
         try (OutputStream outputStream = new FileOutputStream(file)) {
             channelSftp.get(path.toString(), outputStream);
         }
