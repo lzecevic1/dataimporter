@@ -25,6 +25,7 @@ public class FtpConnectionManager implements ConnectionManager {
     private static String HOST_PATH = "/home/lzecevic/Desktop/importer/";
     @Autowired
     private FileRepository fileRepository;
+    @Autowired
     private FileNameParser fileNameParser;
     private FTPClient ftpClient;
     private ConnectionData connectionData;

@@ -6,6 +6,7 @@ com/company/impl/FTPFileFilterImpl.class
 com/company/model/PortedNumber.class
 com/company/repository/ConnectionDataRepository.class
 com/company/enums/ConnectionType.class
+com/company/util/FileFilter.class
 com/company/connectionmanager/ConnectionManager.class
 com/company/controller/ImportController.class
 com/company/factory/ConnectionManagerFactory.class
