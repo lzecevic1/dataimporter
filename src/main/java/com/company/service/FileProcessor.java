@@ -17,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class FileProcessor {
+    private static int THREAD_POOL_SIZE = 4;
+
     @Autowired
     private PortedNumberRepository portedNumberRepository;
     @Autowired
@@ -24,11 +26,13 @@ public class FileProcessor {
     @Autowired
     private FileNameParser fileNameParser;
 
+    private ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
             LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
             readAllPortedNumbersFromFile(fileName, portedNumbers);
-            saveNumbers(portedNumbers);
+            updateLastImportedFile(portedNumbers);
             saveFile(fileName);
         }
     }
@@ -43,8 +47,8 @@ public class FileProcessor {
         }
     }
 
-    private void saveNumbers(LinkedBlockingQueue<String> portedNumbers) {
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private void updateLastImportedFile(LinkedBlockingQueue<String> portedNumbers) {
+
         startThreads(portedNumbers, executorService);
         executorService.shutdown();
     }
@@ -55,8 +59,8 @@ public class FileProcessor {
     }
 
     private void startThreads(LinkedBlockingQueue<String> portedNumbers, ExecutorService executorService) {
-        for (int i = 0; i < 4; i++) {
-            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository));
+        for (int i = 0; i < THREAD_POOL_SIZE; i++) {
+            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository, i));
         }
     }
 }

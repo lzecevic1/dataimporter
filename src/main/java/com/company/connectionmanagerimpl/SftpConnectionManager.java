@@ -54,7 +54,7 @@ public class SftpConnectionManager implements ConnectionManager {
         Vector allFiles = channelSftp.ls(connectionData.getPath() + "PortedNumbers*");
         for (Object file : allFiles) {
             String nameOfFile = ((ChannelSftp.LsEntry) file).getFilename();
-            if (fileFilter.acceptFile(nameOfFile)) {
+            if (fileShouldBeProcessed(nameOfFile)) {
                 try {
                     downloadFile(nameOfFile);
                     filesToDownload.add(nameOfFile);
@@ -68,9 +68,14 @@ public class SftpConnectionManager implements ConnectionManager {
         return filesToDownload;
     }
 
+
     @Override
     public void disconnect() throws IOException {
         session.disconnect();
+    }
+
+    private boolean fileShouldBeProcessed(String nameOfFile) {
+        return fileFilter.acceptFile(nameOfFile);
     }
 
     private void downloadFile(String nameOfFile) throws IOException, SftpException {

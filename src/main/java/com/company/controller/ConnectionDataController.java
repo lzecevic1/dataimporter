@@ -5,6 +5,8 @@ import com.company.repository.ConnectionDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/connectionData")
 public class ConnectionDataController {
@@ -14,6 +16,15 @@ public class ConnectionDataController {
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public void insertData(@RequestBody ConnectionData data) {
-        connectionDataRepository.save(data);
+        try {
+            connectionDataRepository.save(data);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Given entity is null!");
+        }
+    }
+
+    @RequestMapping(value = "/all", method = RequestMethod.POST)
+    public List<ConnectionData> getAllData(@RequestBody ConnectionData data) {
+        return (List<ConnectionData>) connectionDataRepository.findAll();
     }
 }

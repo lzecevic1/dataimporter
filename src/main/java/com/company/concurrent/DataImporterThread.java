@@ -13,14 +13,20 @@ public class DataImporterThread implements Runnable {
 
     private LinkedBlockingQueue<String> portedNumbers;
 
-    public DataImporterThread(LinkedBlockingQueue<String> portedNumbers, PortedNumberRepository portedNumberRepository) {
+    private String threadName = "thread";
+    int index=0;
+    public DataImporterThread(LinkedBlockingQueue<String> portedNumbers,
+                              PortedNumberRepository portedNumberRepository,
+                              int index) {
         this.portedNumbers = portedNumbers;
         this.portedNumberRepository = portedNumberRepository;
+        this.index = index;
     }
 
     @Override
     public void run() {
         try {
+            System.out.println("Thread name: " + threadName + index);
             while (portedNumbers.size() > 0) {
                 portedNumberRepository.save(new PortedNumber(portedNumbers.take()));
             }
