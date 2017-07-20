@@ -50,6 +50,7 @@ public class SftpConnectionManager implements ConnectionManager {
     @Override
     public List<String> download() throws Exception {
         List<String> filesToDownload = new ArrayList<>();
+
         Vector allFiles = channelSftp.ls(connectionData.getPath() + "PortedNumbers*");
         for (Object file : allFiles) {
             String nameOfFile = ((ChannelSftp.LsEntry) file).getFilename();

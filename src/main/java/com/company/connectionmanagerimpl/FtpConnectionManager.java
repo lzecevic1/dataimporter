@@ -1,7 +1,7 @@
 package com.company.connectionmanagerimpl;
 
 import com.company.connectionmanager.ConnectionManager;
-import com.company.impl.FTPFileFilterImpl;
+import com.company.ftpfilefilterimpl.FTPFileFilterImpl;
 import com.company.model.ConnectionData;
 import com.company.repository.FileRepository;
 import com.company.util.FileNameParser;
@@ -41,8 +41,8 @@ public class FtpConnectionManager implements ConnectionManager {
     @Override
     public void connect() throws Exception {
         ftpClient.connect(connectionData.getHost(), connectionData.getPort());
-        checkReplyCode(ftpClient);
-        login(connectionData, ftpClient);
+        checkReplyCode();
+        login(connectionData);
     }
 
     @Override
@@ -73,6 +73,20 @@ public class FtpConnectionManager implements ConnectionManager {
         }
     }
 
+    private void checkReplyCode() throws Exception {
+        int replyCode = ftpClient.getReplyCode();
+        if (!FTPReply.isPositiveCompletion(replyCode)) {
+            throw new ConnectException("Server refused connection. Reply code: " + String.valueOf(replyCode));
+        }
+    }
+
+    private void login(ConnectionData connectionData) throws Exception {
+        Boolean loginSuccessful = ftpClient.login(connectionData.getUsername(), connectionData.getPassword());
+        if (!loginSuccessful) {
+            throw new LoginException("Login failed!");
+        }
+    }
+
     private void prepareFtpClient() throws IOException {
         ftpClient.enterLocalPassiveMode();
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
@@ -80,19 +94,5 @@ public class FtpConnectionManager implements ConnectionManager {
 
     private FTPFile[] getFtpFiles() throws IOException {
         return ftpClient.listFiles(connectionData.getPath(), new FTPFileFilterImpl(fileRepository, fileNameParser));
-    }
-
-    private void login(ConnectionData connectionData, FTPClient ftp) throws Exception {
-        Boolean loginSuccessful = ftp.login(connectionData.getUsername(), connectionData.getPassword());
-        if (!loginSuccessful) {
-            throw new LoginException("Login failed!");
-        }
-    }
-
-    private void checkReplyCode(FTPClient ftp) throws Exception {
-        int replyCode = ftp.getReplyCode();
-        if (!FTPReply.isPositiveCompletion(replyCode)) {
-            throw new ConnectException("Server refused connection. Reply code: " + String.valueOf(replyCode));
-        }
     }
 }

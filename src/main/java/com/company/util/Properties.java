@@ -14,7 +14,7 @@ public class Properties implements EnvironmentAware {
 
     @Override
     public void setEnvironment(Environment env) {
-        if(env != null) {
+        if (env != null) {
             environment = env;
         }
     }
