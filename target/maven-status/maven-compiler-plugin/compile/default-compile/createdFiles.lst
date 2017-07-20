@@ -1,9 +1,9 @@
-com/company/connectionmanager/FtpConnectionManager.class
+com/company/concurrentmanagerimpl/FtpConnectionManager.class
 com/company/DataImporterApplication.class
 com/company/controller/ConnectionDataController.class
 com/company/model/ImportFile.class
-com/company/model/PortedNumber.class
 com/company/impl/FTPFileFilterImpl.class
+com/company/model/PortedNumber.class
 com/company/repository/ConnectionDataRepository.class
 com/company/enums/ConnectionType.class
 com/company/util/FileFilter.class
@@ -14,6 +14,7 @@ com/company/model/ConnectionData.class
 com/company/repository/FileRepository.class
 com/company/concurrent/DataImporterThread.class
 com/company/util/FileNameParser.class
-com/company/connectionmanager/SftpConnectionManager.class
-com/company/repository/PortedNumberRepository.class
+com/company/util/Properties.class
+com/company/concurrentmanagerimpl/SftpConnectionManager.class
 com/company/service/FileProcessor.class
+com/company/repository/PortedNumberRepository.class

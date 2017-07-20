@@ -5,6 +5,7 @@ import com.company.model.ImportFile;
 import com.company.repository.FileRepository;
 import com.company.repository.PortedNumberRepository;
 import com.company.util.FileNameParser;
+import com.company.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
@@ -16,7 +17,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class FileProcessor {
-    private static String HOME_PATH = "/home/lzecevic/Desktop/importer/";
     @Autowired
     private PortedNumberRepository portedNumberRepository;
     @Autowired
@@ -39,7 +39,7 @@ public class FileProcessor {
     }
 
     private void readAllPortedNumbersFromFile(String fileName, LinkedBlockingQueue<String> portedNumbers) throws IOException, InterruptedException {
-        FileReader fileReader = new FileReader(HOME_PATH + fileName);
+        FileReader fileReader = new FileReader(Properties.getProperty("file.location") + fileName);
         try (BufferedReader br = new BufferedReader(fileReader)) {
             String currentNumber;
             while (((currentNumber = br.readLine()) != null) && !currentNumber.equals("")) {

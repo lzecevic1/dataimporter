@@ -13,14 +13,6 @@ public class DataImporterApplication {
     public static void main(String[] args) {
         SpringApplication.run(DataImporterApplication.class, args);
     }
-
-/*
-    @Bean
-    public FileFilter fileFilter() {
-        return new FileFilter();
-    }
-*/
-
     @Bean
     public FileNameParser fileNameParser() {
         return new FileNameParser();
@@ -34,10 +26,5 @@ public class DataImporterApplication {
     @Bean
     public ConnectionManagerFactory connectionManagerFactory() {
         return new ConnectionManagerFactory();
-    }
-
-    @Bean
-    public Properties properties() {
-        return new Properties();
     }
 }

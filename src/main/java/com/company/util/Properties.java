@@ -6,17 +6,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Properties implements EnvironmentAware {
-
     public static Environment environment;
 
-    public static  String getConfigProp(String key) {
+    public static String getProperty(String key) {
         return environment.getProperty(key);
     }
 
     @Override
     public void setEnvironment(Environment env) {
-        if(env==null){
-            environment=env;
+        if(env != null) {
+            environment = env;
         }
     }
 }
