@@ -6,6 +6,8 @@ import com.company.repository.FileRepository;
 import com.company.repository.PortedNumberRepository;
 import com.company.util.FileNameParser;
 import com.company.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
@@ -18,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class FileProcessor {
     private static int THREAD_POOL_SIZE = 4;
+    private static final Logger logger = LoggerFactory.getLogger(FileProcessor.class);
 
     @Autowired
     private PortedNumberRepository portedNumberRepository;
@@ -30,10 +33,12 @@ public class FileProcessor {
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
+            logger.info("Processing file: " + fileName);
             LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
             readAllPortedNumbersFromFile(fileName, portedNumbers);
             updateLastImportedFile(portedNumbers);
             saveFile(fileName);
+            logger.info("Processing file " + fileName + " finished");
         }
     }
 

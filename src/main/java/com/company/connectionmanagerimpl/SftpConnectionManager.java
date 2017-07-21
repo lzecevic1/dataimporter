@@ -7,6 +7,8 @@ import com.company.util.FileFilter;
 import com.company.util.FileNameParser;
 import com.company.util.Properties;
 import com.jcraft.jsch.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +23,8 @@ import java.util.Vector;
 import static com.jcraft.jsch.ChannelSftp.SSH_FX_FAILURE;
 
 public class SftpConnectionManager implements ConnectionManager {
+    private static final Logger logger = LoggerFactory.getLogger(SftpConnectionManager.class);
+
     private ConnectionData connectionData;
     private JSch jsch;
     private Session session;
@@ -42,7 +46,9 @@ public class SftpConnectionManager implements ConnectionManager {
             session.connect();
             channelSftp = (ChannelSftp) session.openChannel("sftp");
             channelSftp.connect();
+            logger.info("Connected to server: " + connectionData.getHost());
         } catch (JSchException exception) {
+            logger.info("Connecting to server " + connectionData.getHost() + " failed...");
             throw new JSchException("Cannot instantiate Session object or cannot open SFTP channel!");
         }
     }
@@ -58,6 +64,7 @@ public class SftpConnectionManager implements ConnectionManager {
                 try {
                     downloadFile(nameOfFile);
                     filesToDownload.add(nameOfFile);
+                    logger.info("Retrieving file: " + nameOfFile);
                 } catch (SftpException exception) {
                     throw new SftpException(SSH_FX_FAILURE, "File retrieving failed!");
                 } catch (IOException exception) {
@@ -68,9 +75,9 @@ public class SftpConnectionManager implements ConnectionManager {
         return filesToDownload;
     }
 
-
     @Override
     public void disconnect() throws IOException {
+        logger.info("Disconnecting from server " + connectionData.getHost());
         session.disconnect();
     }
 

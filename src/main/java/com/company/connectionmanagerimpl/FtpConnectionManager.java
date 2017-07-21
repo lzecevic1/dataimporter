@@ -10,6 +10,8 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.LoginException;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FtpConnectionManager implements ConnectionManager {
+    private static final Logger logger = LoggerFactory.getLogger("timeBased");
+
     @Autowired
     private FileRepository fileRepository;
     @Autowired
@@ -41,6 +45,7 @@ public class FtpConnectionManager implements ConnectionManager {
     @Override
     public void connect() throws Exception {
         ftpClient.connect(connectionData.getHost(), connectionData.getPort());
+        logger.info("Connected to server: " + connectionData.getHost());
         checkReplyCode();
         login(connectionData);
     }
@@ -51,6 +56,7 @@ public class FtpConnectionManager implements ConnectionManager {
         prepareFtpClient();
 
         FTPFile[] files = getFtpFiles();
+        logger.info(String.valueOf(files.length) + " files for download");
         for (FTPFile ftpFile : files) {
             String ftpFileName = ftpFile.getName();
             Path path = Paths.get(connectionData.getPath() + ftpFileName);
@@ -61,6 +67,7 @@ public class FtpConnectionManager implements ConnectionManager {
                     throw new IOException("File retrieving failed!");
                 }
                 fileNames.add(ftpFileName);
+                logger.info("Retrieving file: " + ftpFileName);
             }
         }
         return fileNames;
@@ -70,6 +77,7 @@ public class FtpConnectionManager implements ConnectionManager {
     public void disconnect() throws IOException {
         if (ftpClient.isConnected()) {
             ftpClient.disconnect();
+            logger.info("Disconnecting from server " + connectionData.getHost());
         }
     }
 
@@ -78,6 +86,7 @@ public class FtpConnectionManager implements ConnectionManager {
         if (!FTPReply.isPositiveCompletion(replyCode)) {
             throw new ConnectException("Server refused connection. Reply code: " + String.valueOf(replyCode));
         }
+        logger.info("Reply code: " + replyCode);
     }
 
     private void login(ConnectionData connectionData) throws Exception {
@@ -85,9 +94,11 @@ public class FtpConnectionManager implements ConnectionManager {
         if (!loginSuccessful) {
             throw new LoginException("Login failed!");
         }
+        logger.info("Login successful!");
     }
 
     private void prepareFtpClient() throws IOException {
+        logger.info("Preparing FTP client for file download...");
         ftpClient.enterLocalPassiveMode();
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
     }
