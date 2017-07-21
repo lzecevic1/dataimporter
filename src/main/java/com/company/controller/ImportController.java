@@ -27,10 +27,12 @@ public class ImportController {
     @RequestMapping(method = RequestMethod.POST)
     public String start(@RequestBody String connectionType) {
         try {
+
             ConnectionType enumValueOfType = ConnectionType.fromString(connectionType);
             ConnectionManager connectionManager = connectionManagerFactory.getConnectionManager(enumValueOfType);
             manageFiles(connectionManager);
         } catch (Exception exception) {
+            logger.info("Error while importing files. " + exception);
             return "Exception: " + exception.getMessage();
         }
         return "Successful data import!";
@@ -42,7 +44,6 @@ public class ImportController {
             List<String> files = connectionManager.download();
             fileProcessor.processFiles(files);
         } catch (Exception e) {
-            logger.info(e.getMessage());
             throw e;
         } finally {
             connectionManager.disconnect();

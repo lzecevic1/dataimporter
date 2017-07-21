@@ -47,7 +47,7 @@ public class FtpConnectionManager implements ConnectionManager {
         ftpClient.connect(connectionData.getHost(), connectionData.getPort());
         logger.info("Connected to server: " + connectionData.getHost());
         checkReplyCode();
-        login(connectionData);
+        login(connectionData.getUsername(), connectionData.getPassword());
     }
 
     @Override
@@ -64,10 +64,11 @@ public class FtpConnectionManager implements ConnectionManager {
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 Boolean success = ftpClient.retrieveFile(path.toString(), outputStream);
                 if (!success) {
+                    logger.info(ftpFileName + " cannot be retrieved from server.");
                     throw new IOException("File retrieving failed!");
                 }
                 fileNames.add(ftpFileName);
-                logger.info("Retrieving file: " + ftpFileName);
+                logger.info("File " + ftpFileName + " retrieved.");
             }
         }
         return fileNames;
@@ -77,7 +78,7 @@ public class FtpConnectionManager implements ConnectionManager {
     public void disconnect() throws IOException {
         if (ftpClient.isConnected()) {
             ftpClient.disconnect();
-            logger.info("Disconnecting from server " + connectionData.getHost());
+            logger.info("Disconnected from server " + connectionData.getHost());
         }
     }
 
@@ -89,9 +90,10 @@ public class FtpConnectionManager implements ConnectionManager {
         logger.info("Reply code: " + replyCode);
     }
 
-    private void login(ConnectionData connectionData) throws Exception {
-        Boolean loginSuccessful = ftpClient.login(connectionData.getUsername(), connectionData.getPassword());
+    private void login(String username, String password) throws Exception {
+        Boolean loginSuccessful = ftpClient.login(username, password);
         if (!loginSuccessful) {
+            logger.info("Login with credentials " + username + ", " + password + " failed!");
             throw new LoginException("Login failed!");
         }
         logger.info("Login successful!");

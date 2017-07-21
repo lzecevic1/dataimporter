@@ -64,10 +64,12 @@ public class SftpConnectionManager implements ConnectionManager {
                 try {
                     downloadFile(nameOfFile);
                     filesToDownload.add(nameOfFile);
-                    logger.info("Retrieving file: " + nameOfFile);
+                    logger.info("File " + nameOfFile + " retrieved.");
                 } catch (SftpException exception) {
+                    logger.info("Error ocurred while retrieving file: " + exception);
                     throw new SftpException(SSH_FX_FAILURE, "File retrieving failed!");
                 } catch (IOException exception) {
+                    logger.info("Error ocurred while creating output stream: " + exception);
                     throw new IOException("Cannot create output stream with given path!");
                 }
             }
@@ -77,8 +79,9 @@ public class SftpConnectionManager implements ConnectionManager {
 
     @Override
     public void disconnect() throws IOException {
-        logger.info("Disconnecting from server " + connectionData.getHost());
+        channelSftp.disconnect();
         session.disconnect();
+        logger.info("Disconnected from server " + connectionData.getHost());
     }
 
     private boolean fileShouldBeProcessed(String nameOfFile) {

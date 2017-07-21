@@ -3,7 +3,6 @@ package com.company;
 import com.company.factory.ConnectionManagerFactory;
 import com.company.service.FileProcessor;
 import com.company.util.FileNameParser;
-import org.apache.log4j.FileAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

@@ -33,7 +33,6 @@ public class FileProcessor {
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
-            logger.info("Processing file: " + fileName);
             LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
             readAllPortedNumbersFromFile(fileName, portedNumbers);
             updateLastImportedFile(portedNumbers);

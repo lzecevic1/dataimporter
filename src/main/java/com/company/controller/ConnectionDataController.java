@@ -2,6 +2,8 @@ package com.company.controller;
 
 import com.company.model.ConnectionData;
 import com.company.repository.ConnectionDataRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/connectionData")
 public class ConnectionDataController {
+    private static final Logger logger = LoggerFactory.getLogger("timeBased");
 
     @Autowired
     private ConnectionDataRepository connectionDataRepository;
@@ -18,7 +21,9 @@ public class ConnectionDataController {
     public void insertData(@RequestBody ConnectionData data) {
         try {
             connectionDataRepository.save(data);
+            logger.info("Data saved successfully");
         } catch (IllegalArgumentException exception) {
+            logger.info("Error occured while saving given data..." + exception);
             throw new IllegalArgumentException("Given entity is null!");
         }
     }

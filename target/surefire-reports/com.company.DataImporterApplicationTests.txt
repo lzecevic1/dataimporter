@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
 Test set: com.company.DataImporterApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.303 sec - in com.company.DataImporterApplicationTests
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 10.189 sec <<< FAILURE! - in com.company.DataImporterApplicationTests
+testFileNameParser(com.company.DataImporterApplicationTests)  Time elapsed: 0.202 sec  <<< FAILURE!
+java.lang.AssertionError: expected:<java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="Europe/Sarajevo",offset=3600000,dstSavings=3600000,useDaylight=true,transitions=119,lastRule=java.util.SimpleTimeZone[id=Europe/Sarajevo,offset=3600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=2,startMonth=2,startDay=-1,startDayOfWeek=1,startTime=3600000,startTimeMode=2,endMode=2,endMonth=9,endDay=-1,endDayOfWeek=1,endTime=3600000,endTimeMode=2]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2017,MONTH=7,WEEK_OF_YEAR=29,WEEK_OF_MONTH=4,DAY_OF_MONTH=21,DAY_OF_YEAR=202,DAY_OF_WEEK=6,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=4,HOUR_OF_DAY=16,MINUTE=7,SECOND=19,MILLISECOND=345,ZONE_OFFSET=3600000,DST_OFFSET=3600000]> but was:<java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="Europe/Sarajevo",offset=3600000,dstSavings=3600000,useDaylight=true,transitions=119,lastRule=java.util.SimpleTimeZone[id=Europe/Sarajevo,offset=3600000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=2,startMonth=2,startDay=-1,startDayOfWeek=1,startTime=3600000,startTimeMode=2,endMode=2,endMonth=9,endDay=-1,endDayOfWeek=1,endTime=3600000,endTimeMode=2]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2017,MONTH=7,WEEK_OF_YEAR=29,WEEK_OF_MONTH=4,DAY_OF_MONTH=21,DAY_OF_YEAR=202,DAY_OF_WEEK=6,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=4,HOUR_OF_DAY=16,MINUTE=7,SECOND=19,MILLISECOND=360,ZONE_OFFSET=3600000,DST_OFFSET=3600000]>
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:834)
+	at org.junit.Assert.assertEquals(Assert.java:118)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at com.company.DataImporterApplicationTests.testFileNameParser(DataImporterApplicationTests.java:40)
+
