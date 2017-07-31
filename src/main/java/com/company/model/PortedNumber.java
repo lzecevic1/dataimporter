@@ -12,9 +12,11 @@ public class PortedNumber {
     private Integer id;
 
     private String msisdn;
+    private String fileName;
 
-    public PortedNumber(String msisdn) {
+    public PortedNumber(String msisdn, String fileName) {
         this.msisdn = msisdn;
+        this.fileName = fileName;
     }
 
     public String getMsisdn() {
@@ -25,6 +27,14 @@ public class PortedNumber {
         this.msisdn = msisdn;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -33,13 +43,15 @@ public class PortedNumber {
         PortedNumber that = (PortedNumber) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return msisdn != null ? msisdn.equals(that.msisdn) : that.msisdn == null;
+        if (msisdn != null ? !msisdn.equals(that.msisdn) : that.msisdn != null) return false;
+        return fileName != null ? fileName.equals(that.fileName) : that.fileName == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (msisdn != null ? msisdn.hashCode() : 0);
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
         return result;
     }
 
@@ -48,6 +60,7 @@ public class PortedNumber {
         return "PortedNumber{" +
                 "id=" + id +
                 ", msisdn='" + msisdn + '\'' +
+                ", fileName='" + fileName + '\'' +
                 '}';
     }
 }

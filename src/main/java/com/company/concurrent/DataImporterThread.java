@@ -12,23 +12,21 @@ public class DataImporterThread implements Runnable {
     private PortedNumberRepository portedNumberRepository;
 
     private LinkedBlockingQueue<String> portedNumbers;
+    private String fileName;
 
-    private String threadName = "thread";
-    int index=0;
     public DataImporterThread(LinkedBlockingQueue<String> portedNumbers,
                               PortedNumberRepository portedNumberRepository,
-                              int index) {
+                              String fileName) {
         this.portedNumbers = portedNumbers;
         this.portedNumberRepository = portedNumberRepository;
-        this.index = index;
+        this.fileName = fileName;
     }
 
     @Override
     public void run() {
         try {
-            System.out.println("Thread name: " + threadName + index);
             while (portedNumbers.size() > 0) {
-                portedNumberRepository.save(new PortedNumber(portedNumbers.take()));
+                portedNumberRepository.save(new PortedNumber(portedNumbers.take(), fileName));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

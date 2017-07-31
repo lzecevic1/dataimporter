@@ -35,7 +35,7 @@ public class FileProcessor {
         for (String fileName : fileNames) {
             LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
             readAllPortedNumbersFromFile(fileName, portedNumbers);
-            updateLastImportedFile(portedNumbers);
+            saveNumbersToDB(portedNumbers, fileName);
             saveFile(fileName);
             logger.info("Processing file " + fileName + " finished");
         }
@@ -51,20 +51,15 @@ public class FileProcessor {
         }
     }
 
-    private void updateLastImportedFile(LinkedBlockingQueue<String> portedNumbers) {
-
-        startThreads(portedNumbers, executorService);
+    private void saveNumbersToDB(LinkedBlockingQueue<String> portedNumbers, String fileName) {
+        for (int i = 0; i < THREAD_POOL_SIZE; i++) {
+            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository, fileName));
+        }
         executorService.shutdown();
     }
 
     private void saveFile(String fileName) {
         ImportFile newFile = new ImportFile(fileName, fileNameParser.getTimestampFromFileName(fileName));
         fileRepository.save(newFile);
-    }
-
-    private void startThreads(LinkedBlockingQueue<String> portedNumbers, ExecutorService executorService) {
-        for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository, i));
-        }
     }
 }
