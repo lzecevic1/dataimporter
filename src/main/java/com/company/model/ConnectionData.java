@@ -9,6 +9,7 @@ public class ConnectionData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     private String host;
     private Integer port;
     private String username;

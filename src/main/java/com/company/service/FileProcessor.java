@@ -29,7 +29,6 @@ public class FileProcessor {
     @Autowired
     private FileNameParser fileNameParser;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
@@ -52,6 +51,7 @@ public class FileProcessor {
     }
 
     private void saveNumbersToDB(LinkedBlockingQueue<String> portedNumbers, String fileName) {
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         for (int i = 0; i < THREAD_POOL_SIZE; i++) {
             executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository, fileName));
         }
