@@ -4,6 +4,8 @@ import com.company.connectionmanager.ConnectionManager;
 import com.company.enums.ConnectionType;
 import com.company.factory.ConnectionManagerFactory;
 import com.company.service.FileProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,19 +17,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/startImport")
 public class ImportController {
+    private static final Logger logger = LoggerFactory.getLogger("timeBased");
+
     @Autowired
     private FileProcessor fileProcessor;
     @Autowired
     private ConnectionManagerFactory connectionManagerFactory;
 
     @RequestMapping(method = RequestMethod.POST)
-    public String start(@RequestBody Integer connectionType) {
+    public String start(@RequestBody String connectionType) {
         try {
-            ConnectionType enumValueOfType = ConnectionType.fromValue(connectionType);
+            ConnectionType enumValueOfType = ConnectionType.fromString(connectionType);
             ConnectionManager connectionManager = connectionManagerFactory.getConnectionManager(enumValueOfType);
             manageFiles(connectionManager);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.info("Error while importing files. " + exception);
             return "Exception: " + exception.getMessage();
         }
         return "Successful data import!";
@@ -39,7 +43,6 @@ public class ImportController {
             List<String> files = connectionManager.download();
             fileProcessor.processFiles(files);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             connectionManager.disconnect();

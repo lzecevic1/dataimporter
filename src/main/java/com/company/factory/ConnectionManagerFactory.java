@@ -1,8 +1,8 @@
 package com.company.factory;
 
 import com.company.connectionmanager.ConnectionManager;
-import com.company.connectionmanager.FtpConnectionManager;
-import com.company.connectionmanager.SftpConnectionManager;
+import com.company.connectionmanagerimpl.FtpConnectionManager;
+import com.company.connectionmanagerimpl.SftpConnectionManager;
 import com.company.enums.ConnectionType;
 import com.company.model.ConnectionData;
 import com.company.repository.ConnectionDataRepository;

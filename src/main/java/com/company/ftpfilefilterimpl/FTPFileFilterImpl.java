@@ -1,4 +1,4 @@
-package com.company.impl;
+package com.company.ftpfilefilterimpl;
 
 import com.company.repository.FileRepository;
 import com.company.util.FileFilter;
