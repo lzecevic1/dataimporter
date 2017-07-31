@@ -27,7 +27,6 @@ public class ImportController {
     @RequestMapping(method = RequestMethod.POST)
     public String start(@RequestBody String connectionType) {
         try {
-
             ConnectionType enumValueOfType = ConnectionType.fromString(connectionType);
             ConnectionManager connectionManager = connectionManagerFactory.getConnectionManager(enumValueOfType);
             manageFiles(connectionManager);
