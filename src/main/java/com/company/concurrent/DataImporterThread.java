@@ -2,7 +2,6 @@ package com.company.concurrent;
 
 import com.company.model.PortedNumber;
 import com.company.repository.PortedNumberRepository;
-import com.company.service.FileProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DataImporterThread implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
-    public static boolean FILE_READ = false;
+    private static boolean FILE_READ = false;
 
     @Autowired
     private PortedNumberRepository portedNumberRepository;
@@ -33,6 +32,7 @@ public class DataImporterThread implements Runnable {
         try {
             synchronized (this) {
                 while (!FILE_READ || portedNumbers.size() > 0) {
+
                     portedNumberRepository.save(portedNumbers.take());
                 }
             }

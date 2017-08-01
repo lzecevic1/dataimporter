@@ -10,6 +10,7 @@ import com.company.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import javax.xml.crypto.Data;
 import java.io.BufferedReader;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FileProcessor {
     private static int THREAD_POOL_SIZE = 4;
@@ -37,6 +39,8 @@ public class FileProcessor {
         for (String fileName : fileNames) {
             DataImporterThread.setFileRead(false);
             LinkedBlockingQueue<PortedNumber> portedNumbers = new LinkedBlockingQueue<>();
+            AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+            atomicBoolean.set(true);
             startThreads(portedNumbers);
             readAllPortedNumbersFromFile(portedNumbers, fileName);
             saveFile(fileName);
