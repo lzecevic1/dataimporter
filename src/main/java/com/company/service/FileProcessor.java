@@ -37,12 +37,11 @@ public class FileProcessor {
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
-            DataImporterThread.setFileRead(false);
             LinkedBlockingQueue<PortedNumber> portedNumbers = new LinkedBlockingQueue<>();
-            AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-            atomicBoolean.set(true);
-            startThreads(portedNumbers);
+            AtomicBoolean fileRead = new AtomicBoolean(false);
+            startThreads(portedNumbers, fileRead);
             readAllPortedNumbersFromFile(portedNumbers, fileName);
+            fileRead.set(true);
             saveFile(fileName);
             LOGGER.info("Processing file " + fileName + " finished.");
         }
@@ -55,13 +54,12 @@ public class FileProcessor {
             while (((currentNumber = br.readLine()) != null) && !currentNumber.equals("")) {
                 portedNumbers.put(new PortedNumber(currentNumber, fileName));
             }
-            DataImporterThread.setFileRead(true);
         }
     }
 
-    private void startThreads(LinkedBlockingQueue<PortedNumber> portedNumbers) {
+    private void startThreads(LinkedBlockingQueue<PortedNumber> portedNumbers, AtomicBoolean fileRead) {
         for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository));
+            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository, fileRead));
         }
     }
 

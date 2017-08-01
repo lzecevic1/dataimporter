@@ -7,32 +7,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DataImporterThread implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
-    private static boolean FILE_READ = false;
 
     @Autowired
     private PortedNumberRepository portedNumberRepository;
 
     private LinkedBlockingQueue<PortedNumber> portedNumbers;
 
-    public static void setFileRead(boolean fileRead) {
-        FILE_READ = fileRead;
-    }
+    private AtomicBoolean fileRead;
 
     public DataImporterThread(LinkedBlockingQueue<PortedNumber> portedNumbers,
-                              PortedNumberRepository portedNumberRepository) {
+                              PortedNumberRepository portedNumberRepository,
+                              AtomicBoolean fileRead) {
         this.portedNumbers = portedNumbers;
         this.portedNumberRepository = portedNumberRepository;
+        this.fileRead = fileRead;
     }
 
     @Override
     public void run() {
         try {
             synchronized (this) {
-                while (!FILE_READ || portedNumbers.size() > 0) {
-
+                while (!fileRead.get() || portedNumbers.size() > 0) {
                     portedNumberRepository.save(portedNumbers.take());
                 }
             }
