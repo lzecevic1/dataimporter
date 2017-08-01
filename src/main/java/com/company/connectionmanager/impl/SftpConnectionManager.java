@@ -23,7 +23,7 @@ import java.util.Vector;
 import static com.jcraft.jsch.ChannelSftp.SSH_FX_FAILURE;
 
 public class SftpConnectionManager implements ConnectionManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SftpConnectionManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
 
     private ConnectionData connectionData;
     private JSch jsch;

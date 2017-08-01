@@ -54,7 +54,7 @@ public class ImportController {
             List<String> files = connectionManager.getFilesForDownload();
             connectionManager.download(files);
             fileProcessor.processFiles(files);
-            System.out.println("Import finished.");
+            LOGGER.info("Import finished.");
         } catch (Exception e) {
             throw e;
         } finally {

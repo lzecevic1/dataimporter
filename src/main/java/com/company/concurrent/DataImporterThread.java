@@ -10,12 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DataImporterThread implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataImporterThread .class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
+    public static boolean FILE_READ = false;
 
     @Autowired
     private PortedNumberRepository portedNumberRepository;
 
     private LinkedBlockingQueue<PortedNumber> portedNumbers;
+
+    public static void setFileRead(boolean fileRead) {
+        FILE_READ = fileRead;
+    }
 
     public DataImporterThread(LinkedBlockingQueue<PortedNumber> portedNumbers,
                               PortedNumberRepository portedNumberRepository) {
@@ -27,7 +32,7 @@ public class DataImporterThread implements Runnable {
     public void run() {
         try {
             synchronized (this) {
-                while (portedNumbers.size() > 0) {
+                while (!FILE_READ || portedNumbers.size() > 0) {
                     portedNumberRepository.save(portedNumbers.take());
                 }
             }

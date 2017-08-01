@@ -10,8 +10,8 @@ import com.company.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class FileProcessor {
     private static int THREAD_POOL_SIZE = 4;
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
 
     @Autowired
     private PortedNumberRepository portedNumberRepository;
@@ -32,28 +32,30 @@ public class FileProcessor {
     private FileNameParser fileNameParser;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-    private LinkedBlockingQueue<PortedNumber> portedNumbers = new LinkedBlockingQueue<>();
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
-            startThreads();
-            readAllPortedNumbersFromFile(fileName);
+            DataImporterThread.setFileRead(false);
+            LinkedBlockingQueue<PortedNumber> portedNumbers = new LinkedBlockingQueue<>();
+            startThreads(portedNumbers);
+            readAllPortedNumbersFromFile(portedNumbers, fileName);
             saveFile(fileName);
             LOGGER.info("Processing file " + fileName + " finished.");
         }
     }
 
-    private void readAllPortedNumbersFromFile(String fileName) throws IOException, InterruptedException {
+    private void readAllPortedNumbersFromFile(LinkedBlockingQueue<PortedNumber> portedNumbers, String fileName) throws IOException, InterruptedException {
         FileReader fileReader = new FileReader(Properties.getProperty("file.location") + fileName);
         try (BufferedReader br = new BufferedReader(fileReader)) {
             String currentNumber;
             while (((currentNumber = br.readLine()) != null) && !currentNumber.equals("")) {
                 portedNumbers.put(new PortedNumber(currentNumber, fileName));
             }
+            DataImporterThread.setFileRead(true);
         }
     }
 
-    private void startThreads() {
+    private void startThreads(LinkedBlockingQueue<PortedNumber> portedNumbers) {
         for (int i = 0; i < THREAD_POOL_SIZE; i++) {
             executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository));
         }

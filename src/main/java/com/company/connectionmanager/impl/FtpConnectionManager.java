@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FtpConnectionManager implements ConnectionManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FtpConnectionManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
 
     @Autowired
     private FileRepository fileRepository;
