@@ -2,6 +2,7 @@ package com.company.service;
 
 import com.company.concurrent.DataImporterThread;
 import com.company.model.ImportFile;
+import com.company.model.PortedNumber;
 import com.company.repository.FileRepository;
 import com.company.repository.PortedNumberRepository;
 import com.company.util.FileNameParser;
@@ -9,6 +10,7 @@ import com.company.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class FileProcessor {
     private static int THREAD_POOL_SIZE = 4;
-    private static final Logger logger = LoggerFactory.getLogger(FileProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileProcessor.class);
 
     @Autowired
     private PortedNumberRepository portedNumberRepository;
@@ -29,33 +31,32 @@ public class FileProcessor {
     @Autowired
     private FileNameParser fileNameParser;
 
+    private ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+    private LinkedBlockingQueue<PortedNumber> portedNumbers = new LinkedBlockingQueue<>();
 
     public void processFiles(List<String> fileNames) throws IOException, InterruptedException {
         for (String fileName : fileNames) {
-            LinkedBlockingQueue<String> portedNumbers = new LinkedBlockingQueue<>();
-            readAllPortedNumbersFromFile(fileName, portedNumbers);
-            saveNumbersToDB(portedNumbers, fileName);
+            startThreads();
+            readAllPortedNumbersFromFile(fileName);
             saveFile(fileName);
-            logger.info("Processing file " + fileName + " finished");
+            LOGGER.info("Processing file " + fileName + " finished.");
         }
     }
 
-    private void readAllPortedNumbersFromFile(String fileName, LinkedBlockingQueue<String> portedNumbers) throws IOException, InterruptedException {
+    private void readAllPortedNumbersFromFile(String fileName) throws IOException, InterruptedException {
         FileReader fileReader = new FileReader(Properties.getProperty("file.location") + fileName);
         try (BufferedReader br = new BufferedReader(fileReader)) {
             String currentNumber;
             while (((currentNumber = br.readLine()) != null) && !currentNumber.equals("")) {
-                portedNumbers.put(currentNumber);
+                portedNumbers.put(new PortedNumber(currentNumber, fileName));
             }
         }
     }
 
-    private void saveNumbersToDB(LinkedBlockingQueue<String> portedNumbers, String fileName) {
-        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+    private void startThreads() {
         for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository, fileName));
+            executorService.execute(new DataImporterThread(portedNumbers, portedNumberRepository));
         }
-        executorService.shutdown();
     }
 
     private void saveFile(String fileName) {

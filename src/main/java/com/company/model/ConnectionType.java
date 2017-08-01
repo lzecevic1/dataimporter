@@ -1,4 +1,4 @@
-package com.company.enums;
+package com.company.model;
 
 public enum ConnectionType {
     FTP("FTP"),

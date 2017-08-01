@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/connectionData")
 public class ConnectionDataController {
-    private static final Logger logger = LoggerFactory.getLogger("timeBased");
+    private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
 
     @Autowired
     private ConnectionDataRepository connectionDataRepository;
@@ -21,9 +21,9 @@ public class ConnectionDataController {
     public void insertData(@RequestBody ConnectionData data) {
         try {
             connectionDataRepository.save(data);
-            logger.info("Data saved successfully");
+            LOGGER.info("Data saved successfully");
         } catch (IllegalArgumentException exception) {
-            logger.info("Error occured while saving given data..." + exception);
+            LOGGER.info("Error occured while saving given data..." + exception);
             throw new IllegalArgumentException("Given entity is null!");
         }
     }
