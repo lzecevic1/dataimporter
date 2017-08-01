@@ -1,7 +1,6 @@
-package com.company.connectionmanagerimpl;
+package com.company.connectionmanager.impl;
 
 import com.company.connectionmanager.ConnectionManager;
-import com.company.ftpfilefilterimpl.FTPFileFilterImpl;
 import com.company.model.ConnectionData;
 import com.company.repository.FileRepository;
 import com.company.util.FileNameParser;
@@ -23,10 +22,11 @@ import java.net.ConnectException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FtpConnectionManager implements ConnectionManager {
-    private static final Logger logger = LoggerFactory.getLogger("timeBased");
+    private static final Logger LOGGER = LoggerFactory.getLogger(FtpConnectionManager.class);
 
     @Autowired
     private FileRepository fileRepository;
@@ -45,40 +45,42 @@ public class FtpConnectionManager implements ConnectionManager {
     @Override
     public void connect() throws Exception {
         ftpClient.connect(connectionData.getHost(), connectionData.getPort());
-        logger.info("Connected to server: " + connectionData.getHost());
+        LOGGER.info("Connected to server: " + connectionData.getHost());
         checkReplyCode();
         login(connectionData.getUsername(), connectionData.getPassword());
     }
 
     @Override
-    public List<String> download() throws Exception {
+    public List<String> getFilesForDownload() throws IOException {
         List<String> fileNames = new ArrayList<>();
         prepareFtpClient();
-
         FTPFile[] files = getFtpFiles();
-        logger.info(String.valueOf(files.length) + " files for download");
-        for (FTPFile ftpFile : files) {
-            String ftpFileName = ftpFile.getName();
-            Path path = Paths.get(connectionData.getPath() + ftpFileName);
-            File file = new File(Properties.getProperty("file.location") + ftpFileName);
+        LOGGER.info(String.valueOf(files.length) + " files for download");
+        Arrays.stream(files).forEach(file -> fileNames.add(file.getName()));
+        return fileNames;
+    }
+
+    @Override
+    public void download(List<String> filesForDownload) throws Exception {
+        for (String fileName : filesForDownload) {
+            Path path = Paths.get(connectionData.getPath() + fileName);
+            File file = new File(Properties.getProperty("file.location") + fileName);
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 Boolean success = ftpClient.retrieveFile(path.toString(), outputStream);
                 if (!success) {
-                    logger.info(ftpFileName + " cannot be retrieved from server.");
+                    LOGGER.info(fileName + " cannot be retrieved from server.");
                     throw new IOException("File retrieving failed!");
                 }
-                fileNames.add(ftpFileName);
-                logger.info("File " + ftpFileName + " retrieved.");
+                LOGGER.info("File " + fileName + "retrieved successfully!");
             }
         }
-        return fileNames;
     }
 
     @Override
     public void disconnect() throws IOException {
         if (ftpClient.isConnected()) {
             ftpClient.disconnect();
-            logger.info("Disconnected from server " + connectionData.getHost());
+            LOGGER.info("Disconnected from server " + connectionData.getHost());
         }
     }
 
@@ -87,20 +89,20 @@ public class FtpConnectionManager implements ConnectionManager {
         if (!FTPReply.isPositiveCompletion(replyCode)) {
             throw new ConnectException("Server refused connection. Reply code: " + String.valueOf(replyCode));
         }
-        logger.info("Reply code: " + replyCode);
+        LOGGER.info("Reply code: " + replyCode);
     }
 
     private void login(String username, String password) throws Exception {
         Boolean loginSuccessful = ftpClient.login(username, password);
         if (!loginSuccessful) {
-            logger.info("Login with credentials " + username + ", " + password + " failed!");
+            LOGGER.info("Login with credentials " + username + ", " + password + " failed!");
             throw new LoginException("Login failed!");
         }
-        logger.info("Login successful!");
+        LOGGER.info("Login successful!");
     }
 
     private void prepareFtpClient() throws IOException {
-        logger.info("Preparing FTP client for file download...");
+        LOGGER.info("Preparing FTP client for file download...");
         ftpClient.enterLocalPassiveMode();
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
     }

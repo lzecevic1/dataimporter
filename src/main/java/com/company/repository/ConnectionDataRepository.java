@@ -1,6 +1,6 @@
 package com.company.repository;
 
-import com.company.enums.ConnectionType;
+import com.company.model.ConnectionType;
 import com.company.model.ConnectionData;
 import org.springframework.data.repository.CrudRepository;
 

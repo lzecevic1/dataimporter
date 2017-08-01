@@ -1,4 +1,4 @@
-package com.company.connectionmanagerimpl;
+package com.company.connectionmanager.impl;
 
 import com.company.connectionmanager.ConnectionManager;
 import com.company.model.ConnectionData;
@@ -23,7 +23,7 @@ import java.util.Vector;
 import static com.jcraft.jsch.ChannelSftp.SSH_FX_FAILURE;
 
 public class SftpConnectionManager implements ConnectionManager {
-    private static final Logger logger = LoggerFactory.getLogger(SftpConnectionManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SftpConnectionManager.class);
 
     private ConnectionData connectionData;
     private JSch jsch;
@@ -46,42 +46,47 @@ public class SftpConnectionManager implements ConnectionManager {
             session.connect();
             channelSftp = (ChannelSftp) session.openChannel("sftp");
             channelSftp.connect();
-            logger.info("Connected to server: " + connectionData.getHost());
+            LOGGER.info("Connected to server: " + connectionData.getHost());
         } catch (JSchException exception) {
-            logger.info("Connecting to server " + connectionData.getHost() + " failed...");
+            LOGGER.info("Connecting to server " + connectionData.getHost() + " failed...");
             throw new JSchException("Cannot instantiate Session object or cannot open SFTP channel!");
         }
     }
 
     @Override
-    public List<String> download() throws Exception {
+    public List<String> getFilesForDownload() throws IOException, SftpException {
         List<String> filesToDownload = new ArrayList<>();
-
         Vector allFiles = channelSftp.ls(connectionData.getPath() + "PortedNumbers*");
         for (Object file : allFiles) {
             String nameOfFile = ((ChannelSftp.LsEntry) file).getFilename();
             if (fileShouldBeProcessed(nameOfFile)) {
-                try {
-                    downloadFile(nameOfFile);
-                    filesToDownload.add(nameOfFile);
-                    logger.info("File " + nameOfFile + " retrieved.");
-                } catch (SftpException exception) {
-                    logger.info("Error ocurred while retrieving file: " + exception);
-                    throw new SftpException(SSH_FX_FAILURE, "File retrieving failed!");
-                } catch (IOException exception) {
-                    logger.info("Error ocurred while creating output stream: " + exception);
-                    throw new IOException("Cannot create output stream with given path!");
-                }
+                filesToDownload.add(nameOfFile);
             }
         }
         return filesToDownload;
     }
 
     @Override
+    public void download(List<String> filesForDownload) throws Exception {
+        for (String file : filesForDownload) {
+            try {
+                downloadFile(file);
+            } catch (IOException e) {
+                LOGGER.info("Error ocurred while creating output stream: " + e);
+                throw new Exception("Cannot create output stream with given path!");
+            } catch (SftpException e) {
+                LOGGER.info("Error ocurred while retrieving file: " + e);
+                throw new SftpException(SSH_FX_FAILURE, "File retrieving failed!");
+            }
+        }
+
+    }
+
+    @Override
     public void disconnect() throws IOException {
         channelSftp.disconnect();
         session.disconnect();
-        logger.info("Disconnected from server " + connectionData.getHost());
+        LOGGER.info("Disconnected from server " + connectionData.getHost());
     }
 
     private boolean fileShouldBeProcessed(String nameOfFile) {
