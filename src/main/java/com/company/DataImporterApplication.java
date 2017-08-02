@@ -1,8 +1,7 @@
 package com.company;
 
+import com.company.connectionmanager.impl.FTPFileFilterImpl;
 import com.company.factory.ConnectionManagerFactory;
-import com.company.repository.FileRepository;
-import com.company.service.FileProcessor;
 import com.company.util.FileFilter;
 import com.company.util.FileNameParser;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import java.io.IOException;
 @SpringBootApplication
 public class DataImporterApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataImporterApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger("timeBased");
 
     public static void main(String[] args) throws IOException {
         logger.info("Starting application...");
@@ -29,8 +28,13 @@ public class DataImporterApplication {
     }
 
     @Bean
-    public FileProcessor fileProcessor() {
-        return new FileProcessor();
+    public FileFilter fileFilter() {
+        return new FileFilter();
+    }
+
+    @Bean
+    public FTPFileFilterImpl ftpFileFilterImpl() {
+        return new FTPFileFilterImpl();
     }
 
     @Bean

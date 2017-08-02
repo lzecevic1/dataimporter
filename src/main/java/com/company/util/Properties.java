@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Properties implements EnvironmentAware {
-    public static Environment environment;
+    private static Environment environment;
 
     public static String getProperty(String key) {
         return environment.getProperty(key);

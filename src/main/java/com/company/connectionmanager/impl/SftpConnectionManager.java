@@ -2,13 +2,12 @@ package com.company.connectionmanager.impl;
 
 import com.company.connectionmanager.ConnectionManager;
 import com.company.model.ConnectionData;
-import com.company.repository.FileRepository;
 import com.company.util.FileFilter;
-import com.company.util.FileNameParser;
 import com.company.util.Properties;
 import com.jcraft.jsch.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,16 +24,17 @@ import static com.jcraft.jsch.ChannelSftp.SSH_FX_FAILURE;
 public class SftpConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
 
+    @Autowired
+    private FileFilter fileFilter;
+
     private ConnectionData connectionData;
     private JSch jsch;
     private Session session;
     private ChannelSftp channelSftp;
-    private FileFilter fileFilter;
 
-    public SftpConnectionManager(ConnectionData connectionData, FileRepository fileRepository, FileNameParser fileNameParser) {
+    public SftpConnectionManager(ConnectionData connectionData) {
         this.jsch = new JSch();
         this.connectionData = connectionData;
-        fileFilter = new FileFilter(fileRepository, fileNameParser);
     }
 
     @Override
@@ -72,14 +72,13 @@ public class SftpConnectionManager implements ConnectionManager {
             try {
                 downloadFile(file);
             } catch (IOException e) {
-                LOGGER.info("Error ocurred while creating output stream: " + e);
+                LOGGER.info("Error occurred while creating output stream: " + e);
                 throw new Exception("Cannot create output stream with given path!");
             } catch (SftpException e) {
-                LOGGER.info("Error ocurred while retrieving file: " + e);
+                LOGGER.info("Error occurred while retrieving file: " + e);
                 throw new SftpException(SSH_FX_FAILURE, "File retrieving failed!");
             }
         }
-
     }
 
     @Override

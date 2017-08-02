@@ -13,11 +13,6 @@ public class FileFilter {
     @Autowired
     private FileNameParser fileNameParser;
 
-    public FileFilter(FileRepository fileRepository, FileNameParser fileNameParser) {
-        this.fileRepository = fileRepository;
-        this.fileNameParser = fileNameParser;
-    }
-
     public boolean acceptFile(String nameOfFile) {
         Calendar importDateOfFile = fileNameParser.getTimestampFromFileName(nameOfFile);
 

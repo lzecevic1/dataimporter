@@ -2,8 +2,6 @@ package com.company.connectionmanager.impl;
 
 import com.company.connectionmanager.ConnectionManager;
 import com.company.model.ConnectionData;
-import com.company.repository.FileRepository;
-import com.company.util.FileNameParser;
 import com.company.util.Properties;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -29,17 +27,15 @@ public class FtpConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
 
     @Autowired
-    private FileRepository fileRepository;
-    @Autowired
-    private FileNameParser fileNameParser;
+    private FTPFileFilterImpl ftpFileFilter;
+
     private FTPClient ftpClient;
     private ConnectionData connectionData;
 
-    public FtpConnectionManager(ConnectionData connectionData, FileRepository fileRepository, FileNameParser fileNameParser) {
+    public FtpConnectionManager(ConnectionData connectionData, FTPFileFilterImpl ftpFileFilter) {
         this.ftpClient = new FTPClient();
         this.connectionData = connectionData;
-        this.fileRepository = fileRepository;
-        this.fileNameParser = fileNameParser;
+        this.ftpFileFilter = ftpFileFilter;
     }
 
     @Override
@@ -108,6 +104,6 @@ public class FtpConnectionManager implements ConnectionManager {
     }
 
     private FTPFile[] getFtpFiles() throws IOException {
-        return ftpClient.listFiles(connectionData.getPath(), new FTPFileFilterImpl(fileRepository, fileNameParser));
+        return ftpClient.listFiles(connectionData.getPath(), ftpFileFilter);
     }
 }

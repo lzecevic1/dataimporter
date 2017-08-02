@@ -16,7 +16,6 @@ public class DataImporterThread implements Runnable {
     private PortedNumberRepository portedNumberRepository;
 
     private LinkedBlockingQueue<PortedNumber> portedNumbers;
-
     private AtomicBoolean fileRead;
 
     public DataImporterThread(LinkedBlockingQueue<PortedNumber> portedNumbers,

@@ -10,9 +10,8 @@ import com.company.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Service
 public class FileProcessor {
     private static int THREAD_POOL_SIZE = 4;
     private static final Logger LOGGER = LoggerFactory.getLogger("timeBased");
